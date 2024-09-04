@@ -1,9 +1,10 @@
 <template>
   <div class="login-container">
+    <!-- el-form是一个饿了吗表单组件，经常展示登录表单 ，model是用于收集表单，rules是表单验证规则-->
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">登录</h3>
       </div>
 
       <el-form-item prop="username">
@@ -41,7 +42,7 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
@@ -58,6 +59,9 @@ import { validUsername } from '@/utils/validate'
 export default {
   name: 'Login',
   data() {
+
+    // 表单验证规则,先不用在在意，验证用户名和密码
+    //回首
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error('Please enter the correct user name'))
@@ -105,12 +109,18 @@ export default {
         this.$refs.password.focus()
       })
     },
+    // 登录，发请求，带着用户名和密码
     handleLogin() {
+      //调用表单的 validate 方法对整个表单进行验证。validate 方法会检查表单的所有字段是否合法
+      //valid 是一个布尔值，如果所有字段都验证通过，则为 true，否则为 false。
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          //派发一个action，登录成功后，跳转到redirect页面
           this.$store.dispatch('user/login', this.loginForm).then(() => {
+            //登陆成功进行路由的跳转
             this.$router.push({ path: this.redirect || '/' })
+            //loading状态设置为false
             this.loading = false
           }).catch(() => {
             this.loading = false
@@ -180,7 +190,8 @@ $light_gray:#eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  background: url(~@/assets/R.png);
+  background-size: 100% 100%;
   overflow: hidden;
 
   .login-form {
