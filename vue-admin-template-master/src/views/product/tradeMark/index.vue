@@ -42,7 +42,7 @@
             type="warning"
             icon="el-icon-edit"
             size="mini"
-            @click="showDialogForm"
+            @click="updateTradeMark"
             >修改</el-button
           >
           <el-button type="danger" icon="el-icon-delete" size="mini"
@@ -166,6 +166,10 @@ export default {
     handleSizeChange(limit) {
       this.limit = limit;
       this.getPageList();
+    },
+
+    updateTradeMark(row){
+      this.dialogFormVisible = true;
     },
 
     showDialogForm() {
