@@ -83,15 +83,17 @@ http://39.98.123.211:8510/swagger-ui.html
 之后在router.js中配置路由，在配置好之后直接就可以使用了
 
 
-## 品牌管理组件
+## 4.品牌管理组件数据展示，tradeMark态组件完成,位置在views/login/index.vue中实现
 
-![image-20220609132657102](https://150-9155-1312350958.cos.ap-chengdu.myqcloud.com/img202206091350094.png)
+ -----js代码实现，位置在views/tradeMark/index.vue中实现,使用elementui的表格组件展示数据
+ -----API（换成真实的接口） 位置在api/product/tradeMark.js,并且将四个组件统一封装index.js文件中并暴露，在main.js中注册全局组件，可以在其他组件中直接使用$API
+ -----在组件中及时的请求数据，并将数据绑定到表格组件中，并且将图片和button放在作用域插槽，这样在需要展示图片、按钮等复杂结构时非常有用
+ -----在该组件中使用了elementui的表格组件，并且使用了分页功能，可以实现数据的分页展示，并且可以实现数据的排序、过滤、搜索等功能
 
-## 添加品牌与修改品牌
 
-![image-20220609132910174](https://150-9155-1312350958.cos.ap-chengdu.myqcloud.com/img202206091350095.png)
+## 5. 添加品牌与修改品牌
+-----先书写api相关的接口，位置在api/product/tradeMark.js,一个是添加品牌，一个是修改品牌，写在了一个函数中，根据id有无判定使用哪个api接口，新增只有两个参数，修改需要携带三个参数,添加的时候使用照片upload，并且根据uielementui的上传图片的api实现图片上传
 
-![image-20220609132928884](https://150-9155-1312350958.cos.ap-chengdu.myqcloud.com/img202206091350096.png)
 
 ## 删除品牌的操作
 
