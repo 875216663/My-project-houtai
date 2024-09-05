@@ -44,6 +44,7 @@ const actions = {
   },
 
 
+  //处理获取用户信息
   async getInfo({ commit, state }) {
     // 从state中获取token，然后调用getInfo接口获取用户信息
     let result = await getInfo(state.token);
@@ -59,6 +60,7 @@ const actions = {
     }
   },
 
+  //处理登出
   async logout({ commit, state }) {
     // 调用logout接口，清除vuex中的token和用户信息，并清除cookie中的token
     let result = await logout(state.token);
@@ -72,6 +74,7 @@ const actions = {
       return Promise.reject(new Error("error"));
     }
   },
+  
   // remove token
   resetToken({ commit }) {
     return new Promise((resolve) => {

@@ -1,3 +1,4 @@
+//将token存入cookie中,这样可以实现token的自动保存
 import Cookies from 'js-cookie'
 
 const TokenKey = 'vue_admin_template_token'

@@ -1,7 +1,7 @@
 //引入axios模块（经过二次封装的http请求模块）
 import request from '@/utils/request'
 
-//对外暴露登录接口
+//对外暴露登录接口，使用真实接口地址
 export function login(data) {
   return request({
     url: '/admin/acl/index/login',
