@@ -54,7 +54,10 @@
           >
         </template>
       </el-table-column>
+      <el-table-column  type= "expand" label="测试" width="60px" align="center">
+      </el-table-column>
     </el-table>
+
 
     <!-- 
       element的分页器 
@@ -119,8 +122,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addOrUpdateTradeMark"
-          >确 定</el-button
-        >
+          >确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -134,7 +136,7 @@ export default {
       //分页器第几页
       page: 1,
       //分页器每一页展示条数
-      limit: 3,
+      limit: 7,
       //总共数据条数
       total: 0,
       //列表展示的数据
@@ -163,25 +165,26 @@ export default {
       },
     };
   },
-  //组件挂载完毕发请求，获取列表数据
+
+  //挂载完毕后获取列表数据
   mounted() {
     this.getPageList();
   },
 
   methods: {
-    //获取列表数据的方法.,如果没有传入 pager，它会默认请求第 1 页的数据,如果传入的话，就请求对应页的数据
+    //获取列表数据的方法,没有传入 pager会默认请求第 1 页的数据,传入的话，请求对应页的数据
     async getPageList(pager = 1) {
       this.page = pager;
       // 解构赋值
       const { page, limit } = this;
       //请求品牌列表的接口,要带两个参数，这里初始化两个字段代表服务器传递参数
       let result = await this.$API.trademark.reqTradeMarkList(page, limit);
-      console.log(result);
       if (result.code === 200) {
         this.list = result.data.records;
         this.total = result.data.total;
       }
     },
+
 
     //当分页器每页展示条数改变时触发，改变每页展示条数，重新请求数据
     handleSizeChange(limit) {
@@ -189,17 +192,15 @@ export default {
       this.getPageList();
     },
 
+    //点击编辑触发，row将这行信息传入并且使用浅拷贝，否则会直接更改展示的内容
     updateTradeMark(row) {
-      // console.log(row);
-      //row是当前选中的品牌信息
       this.dialogFormVisible = true;
-      //将已有的品牌信息赋值给tmForm进行展示,是list的内容，使用浅拷贝，否则会直接更改展示的内容
       this.tmForm = { ...row };
     },
 
+    //点击新增触发，并且表单内容清空
     showDialogForm() {
       this.dialogFormVisible = true;
-      // 每次都清空数据
       this.tmForm = {
         tmName: "",
         logoUrl: "",
@@ -208,6 +209,7 @@ export default {
 
     // 上传图片成功,res是上传成功后返回的前端数据，file是上传成功后返回的前端数据
     handleAvatarSuccess(res, file) {
+      console.log(res, file);
       this.tmForm.logoUrl = res.data;
     },
     // 上传图片之前的限制条件
@@ -255,8 +257,8 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-      //点击确认按钮触发的事件，要发请求
-        .then(async() => {
+        //点击确认按钮触发的事件，要发请求
+        .then(async () => {
           let result = await this.$API.trademark.reqDeleteTradeMark(row.id);
           if (result.code == 200) {
             this.$message({
@@ -264,7 +266,7 @@ export default {
               type: "success",
             });
             //这里是帮助更改数据后保持在当前页
-            this.getPageList(this.list.length>1?this.page:this.page-1);
+            this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
           } else {
             console.log("错误提交");
             return false;
