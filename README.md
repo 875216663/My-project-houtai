@@ -94,14 +94,56 @@ http://39.98.123.211:8510/swagger-ui.html
 ## 5. 添加品牌与修改品牌
 -----先书写api相关的接口，位置在api/product/tradeMark.js,一个是添加品牌，一个是修改品牌，写在了一个函数中，根据id有无判定使用哪个api接口，新增只有两个参数，修改需要携带三个参数,添加的时候使用照片upload，并且根据uielementui的上传图片的api实现图片上传
 
+## 6. 表单验证
+-----在form使用添加:rules="rules"，并且在item中添加props属性，在data中写rules的校验规则,名字对应item的props属性，在methods中写校验方法，在form写ref并且method中调用validate方法，在提交的时候调用validate方法，如果校验通过则提交，否则提示错误信息
 
-## 删除品牌的操作
+#### 自定义校验规则：:rules="rules" ref="ruleForm" 正常写，在data书写逻辑：
+ var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.ruleForm.checkPass !== '') {
+            this.$refs.ruleForm.validateField('checkPass');
+          }
+          callback();
+        }
+      };
 
-![image-20220609133045066](https://150-9155-1312350958.cos.ap-chengdu.myqcloud.com/img202206091350097.png)
+      rules: {
+          pass: [
+            { validator: validatePass, trigger: 'blur' }
+          ],
+      }
 
-## 获取数据动态的展示三级联动]
 
-![image-20220609133253222](https://150-9155-1312350958.cos.ap-chengdu.myqcloud.com/img202206091350098.png)
+
+## 7.删除品牌的操作
+首先先写api的接口，然后在tradeMark.vue中写删除的操作，点击按钮的时候调用api接口，并且在api接口中写删除的逻辑，删除成功之后跳转到品牌管理页面，并且刷新页面
+
+
+## 8.获取数据动态的展示三级联动
+
+
+-----全局组件写在component中,并且在main组件中注册
+-----在api中写获取数据的接口，并且在main.js中注册全局组件，在需要的地方直接调用即可
+-----在component中写三级联动的组件
+-----在views的product中Attr中调用组件
+
+
+## 9.获取属性数据
+
+-----在api中写获取属性数据的接口，在三级联动的地方书写在第三级分类的时候实现数据的获取，并且进行数据的展示
+属性值和操作使用插槽来实现，里面使用element的tag和button来实现
+
+## 10.搜集平台属性的操作
+属性名称和属性值列表
+注意：不要在data中使用this.data属性，因为数据存储是无序的，可能会导致数据展示不准确
+
+## 11.查看模式与编辑模式切换
+查看模式显示span，编辑模式显示input，点击按钮切换
+需要注意一个属性flag不能展示所有的属性，不然一个会影响另一个
+
+
 
 ## SPU模块介绍
 

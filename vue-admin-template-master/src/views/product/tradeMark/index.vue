@@ -54,10 +54,9 @@
           >
         </template>
       </el-table-column>
-      <el-table-column  type= "expand" label="测试" width="60px" align="center">
+      <el-table-column type="expand" label="测试" width="60px" align="center">
       </el-table-column>
     </el-table>
-
 
     <!-- 
       element的分页器 
@@ -122,7 +121,8 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addOrUpdateTradeMark"
-          >确 定</el-button>
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -185,7 +185,6 @@ export default {
       }
     },
 
-
     //当分页器每页展示条数改变时触发，改变每页展示条数，重新请求数据
     handleSizeChange(limit) {
       this.limit = limit;
@@ -207,11 +206,12 @@ export default {
       };
     },
 
-    // 上传图片成功,res是上传成功后返回的前端数据，file是上传成功后返回的前端数据
+    // 上传图片成功,res是上传成功后返回的前端照片url，file是上传成功后返回的前端数据
     handleAvatarSuccess(res, file) {
       console.log(res, file);
       this.tmForm.logoUrl = res.data;
     },
+
     // 上传图片之前的限制条件
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";

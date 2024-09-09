@@ -209,9 +209,10 @@ export default {
         flag: true,
       });
 
-      // this.$nextTick(() => {
-      //   this.$refs[this.attrInfo.attrValueList.length - 1].focus();
-      // });
+      //新增也要自动化聚焦
+      this.$nextTick(() => {
+        this.$refs[this.attrInfo.attrValueList.length - 1].focus();
+      });
     },
     updateAttr(row) {
       this.isShowTable = false;
