@@ -60,18 +60,18 @@ export default {
   name: 'Login',
   data() {
 
-    // 表单验证规则,先不用在在意，验证用户名和密码
+    // 表单验证规则,先不用在意，验证用户名和密码
     //回首
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请输入正确的用户名'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码长度不能少于6位'))
       } else {
         callback()
       }
@@ -115,6 +115,7 @@ export default {
       //valid 是一个布尔值，如果所有字段都验证通过，则为 true，否则为 false。
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          //loading状态设置为true
           this.loading = true
           //派发一个action，登录成功后，跳转到redirect页面
           this.$store.dispatch('user/login', this.loginForm).then(() => {

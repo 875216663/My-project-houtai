@@ -98,27 +98,33 @@
                 @keyup.native.enter="toLook(row)"
                 :ref="$index"
               ></el-input>
-              <span v-else @click="toEdit(row, $index)" style="display: block">{{
-                row.valueName
-              }}</span>
+              <span
+                v-else
+                @click="toEdit(row, $index)"
+                style="display: block"
+                >{{ row.valueName }}</span
+              >
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="width">
             <template slot-scope="{ row, $index }">
-              <div style="text-align: left">
+              <el-popconfirm
+                :title="`确定删除${row.valueName}?`"
+                @onConfirm="deleteAttrValue($index)"
+              >
                 <el-button
                   type="danger"
                   icon="el-icon-delete"
                   size="mini"
-                  @click="deleteAttrValue(row)"
+                  slot="reference"
                   >删除</el-button
                 >
-              </div>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
 
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="addOrUpdateAttr">保存</el-button>
         <el-button @click="isShowTable = true">取消</el-button>
       </div>
     </el-card>
@@ -127,14 +133,15 @@
   
   <script>
 //按需引入loadash
+import { reqAddOrUpdateAttr } from "@/api/product/attr";
 import cloneDeep from "lodash/cloneDeep";
 export default {
   name: "Attr",
   data() {
     return {
-      category1Id: "1",
-      category2Id: "1",
-      category3Id: "1",
+      category1Id: "",
+      category2Id: "",
+      category3Id: "",
       attrList: [],
       isShowTable: true,
       //收集或者修改属性使用的
@@ -153,9 +160,7 @@ export default {
       },
     };
   },
-  mounted() {
-    this.getAttrList();
-  },
+ 
   methods: {
     //根据子组件传过来的分类id，设置当前分类的id，子传父
     getCategoryId({ categoryId, level }) {
@@ -172,10 +177,11 @@ export default {
         this.isShowTable = true;
       }
     },
+
+    //获取属性列表的数据
     async getAttrList() {
       //获取分类的ID
       const { category1Id, category2Id, category3Id } = this;
-      //获取属性列表的数据
       let result = await this.$API.attr.reqAttrList(
         category1Id,
         category2Id,
@@ -209,16 +215,17 @@ export default {
         flag: true,
       });
 
-      //新增也要自动化聚焦
+      //新增自动化聚焦
       this.$nextTick(() => {
         this.$refs[this.attrInfo.attrValueList.length - 1].focus();
       });
     },
+    //修改属性值
     updateAttr(row) {
       this.isShowTable = false;
       //需要使用深拷贝,因为数据结构复杂
       this.attrInfo = cloneDeep(row);
-      
+
       this.attrInfo.attrValueList.forEach((item) => {
         // 不能这么写因为flag不是响应式数据，数据变化不能触发视图变化
         // item.flag = true;
@@ -226,40 +233,87 @@ export default {
         this.$set(item, "flag", false);
       });
     },
+
     toLook(row) {
       // 检查属性值是否为空
       if (row.valueName.trim() === "") {
         this.$message("请输入一个正常的属性值");
         return;
       }
-
       // 检查新增的属性值是否与已有的重复
       let isRepat = this.attrInfo.attrValueList.some((item) => {
         // 跳过当前项（row）
         return row !== item && row.valueName === item.valueName;
       });
-
       // 如果有重复，给出提示
       if (isRepat) {
         this.$message("该属性值已存在，请输入其他值");
         return;
       }
-
       // 如果没有重复，将当前编辑模式切换为查看模式
       row.flag = false;
     },
+
     toEdit(row, index) {
       row.flag = true;
       //点击span的时候，重绘重拍一个input它是需要耗费事件，因此我们不可能一点击span立马获取到input
       //$nextTick,当节点渲染完毕了，会执行一次
       this.$nextTick(() => {
-        //获取响应表单元素的聚焦                                                                              
+        //获取响应表单元素的聚焦
         this.$refs[index].focus();
       });
-      
     },
-    deleteAttrValue(row) {
-      console.log(row);
+    // 删除属性值
+    deleteAttrValue(index) {
+      this.attrInfo.attrValueList.splice(index, 1);
+    },
+
+    // 保存或更新属性，并删除flag属性
+    // 保存或更新属性，并删除flag属性
+    async addOrUpdateAttr() {
+      const { attrInfo } = this;
+
+      // 深拷贝 attrInfo 避免直接修改原始数据
+      const updatedAttrInfo = cloneDeep(attrInfo);
+
+      // 去除空的属性值并删除 flag 属性
+      updatedAttrInfo.attrValueList = updatedAttrInfo.attrValueList
+        .filter((item) => {
+          return item.valueName.trim() !== "";
+        })
+        .map((item) => {
+          const { flag, ...rest } = item;
+          return rest; // 返回去除 flag 属性后的对象
+        });
+
+      // 检查是否有重复的属性值
+      const valueNames = updatedAttrInfo.attrValueList.map(
+        (item) => item.valueName
+      );
+      const hasDuplicate = valueNames.some(
+        (value, index) => valueNames.indexOf(value) !== index
+      );
+
+      if (hasDuplicate) {
+        this.$message.error("存在重复的属性值，请修改后再保存");
+        return;
+      }
+
+      try {
+        // 这里的 API 请求需要传入的对象应该确保格式正确，比如包含 categoryId、attrName 等
+        const result = await this.$API.attr.reqAddOrUpdateAttr(updatedAttrInfo);
+
+        if (result && result.code === 200) {
+          this.$message.success("保存成功");
+          this.isShowTable = true; // 切换回表格视图
+          await this.getAttrList(); // 重新获取属性列表，确保界面更新
+        } else {
+          this.$message.error("保存失败，请重试");
+        }
+      } catch (error) {
+        this.$message.error("保存失败，服务器异常");
+        console.error("保存失败:", error);
+      }
     },
   },
 };
