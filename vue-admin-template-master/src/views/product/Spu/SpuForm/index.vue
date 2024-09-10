@@ -1,13 +1,22 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" label-width="100px">
+    <el-form ref="form" :model="spu" label-width="100px">
       <el-form-item label="SPU名称">
         <el-input v-model="spu.spuName"></el-input>
       </el-form-item>
 
       <el-form-item label="品牌">
-        <el-select v-if="tradeMarkList.length > 0"placeholder="请选择品牌"  v-model="spu.tmId">
-          <el-option :label="tm.tmName" :value="tm.id" v-for="(tm,index) in tradeMarkList" :key="tm.id"></el-option>
+        <el-select
+          v-if="tradeMarkList.length > 0"
+          placeholder="请选择品牌"
+          v-model="spu.tmId"
+        >
+          <el-option
+            :label="tm.tmName"
+            :value="tm.id"
+            v-for="(tm, index) in tradeMarkList"
+            :key="tm.id"
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -25,17 +34,24 @@
       </el-form-item>
 
       <el-form-item label="销售属性">
-        <el-select  placeholder="请选择销售属性">
-          <el-option :label="saleAttr.name" :value="saleAttr.id" v-for="(saleAttr,index) in saleAttrList" :key="saleAttr.id"></el-option>
+        
+        <el-select
+          v-if="saleAttrList.length > 0"
+          v-model="spu.spuSaleAttrId"
+          placeholder="请选择销售属性"
+        >
+          <el-option
+            :label="saleAttr.name"
+            :value="saleAttr.id"
+            v-for="(saleAttr, index) in saleAttrList"
+            :key="saleAttr.id"
+          ></el-option>
         </el-select>
         <el-button type="primary" icon="el-icon-plus"> 添加属性</el-button>
-        <el-table :data="form.saleAttr" style="width: 100%">
+        <el-table :data="spu.spuSaleAttrList" style="width: 100%">
           <el-table-column type="index" label="序号"></el-table-column>
-          <el-table-column prop="name" label="属性名"></el-table-column>
-          <el-table-column
-            prop="value"
-            label="属性值名称列表"
-          ></el-table-column>
+          <el-table-column prop="saleAttrName" label="属性名"></el-table-column>
+          <el-table-column label="属性值名称列表"></el-table-column>
 
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -55,14 +71,6 @@ export default {
   name: "SpuForm",
   data() {
     return {
-      form: {
-        spuName: "",
-        brandId: "",
-        spuDesc: "",
-        spuImg: "",
-        saleAttr: [],
-        imgList: [],
-      },
       spu: {
         category3Id: 0, //三级分类的id
         description: "", //描述

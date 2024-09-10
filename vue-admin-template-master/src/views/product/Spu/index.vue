@@ -5,12 +5,13 @@
     </el-card>
     <el-card>
       <div v-show="scene == 0">
-        <el-button type="primary" icon="el-icon-plus">添加spu</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id">添加spu</el-button>
       <el-table :data="records" style="width: 100%" border >
         <el-table-column
           type="index"
           label="序号"
-          width="200px"
+          width="80"
+          align="center"  
         ></el-table-column>
         <el-table-column
           prop="spuName"
