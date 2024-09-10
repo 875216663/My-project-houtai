@@ -45,7 +45,7 @@
       >
       </el-pagination>
       </div>
-      
+      <!-- 新增spu表单 -->
       <SpuForm v-show="scene == 1" @changeScene="changeScene" ref="spu"></SpuForm>
     </el-card>
   </div>
@@ -62,6 +62,7 @@ export default {
       category2Id: "1",
       category3Id: "1",
       records: [],
+      //分页器相关
       //分页器第几页
       page: 1,
       //分页器每一页展示条数
@@ -69,9 +70,6 @@ export default {
       //总共数据条数
       total: 0,
       scene: "0",
-
-      //spu表单数据
-      
     };
   },
   components: {
@@ -96,6 +94,7 @@ export default {
         this.getSpuList();
       }
     },
+
     async getSpuList(pager = 1) {
       this.page = pager;
       const { page, limit, category3Id } = this;
@@ -112,10 +111,10 @@ export default {
       this.limit = limit;
       this.getSpuList();
     },
+    //新增spu
     updateSpu(row) {
       this.scene = 1;
-      // //获取子组件SpuForm子组件的
-      // //在父组件当中可以通过$ref获取子组件等等
+      //在父组件当中可以通过$ref获取子组件并且传入自己的参数
       this.$refs.spu.initSpuData(row);
     },
     changeScene(scene){
